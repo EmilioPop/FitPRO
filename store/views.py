@@ -1,9 +1,12 @@
+from django.db.models import Q
+from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404
 
 from carts.models import CartItem
 from carts.views import _cart_id
 from category.models import Category
 from store.models import Product
+from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 
 
 def store(request, category_slug=None):
@@ -13,14 +16,19 @@ def store(request, category_slug=None):
     if category_slug != None:
         categories = get_object_or_404(Category, slug=category_slug)
         products = Product.objects.filter(category=categories, is_available=True)
+        paginator = Paginator(products, 3)  # this way we select how many products we display in a page
+        page = request.GET.get('page')
+        paged_products = paginator.get_page(page)
         product_count = products.count()
     else:
-        products = Product.objects.all().filter(
-            is_available=True)  # is_available=True --> brings only products that are in stock
+        products = Product.objects.all().filter(is_available=True).order_by('id')  # is_available=True --> brings only products that are in stock
+        paginator = Paginator(products, 3) # this way we select how many products we display in a page
+        page = request.GET.get('page')
+        paged_products = paginator.get_page(page)
         product_count = products.count()
 
     context = {
-        'products': products,
+        'products': paged_products, # paged_products --> we set how many products are viewed per page
         'product_count': product_count,
     }
     return render(request, 'store/store.html', context)
@@ -39,3 +47,14 @@ def product_detail(request, category_slug, product_slug):
         'in_cart': in_cart,
     }
     return render(request, 'store/product_detail.html', context)
+
+def search(request):
+    if 'keyword' in request.GET:
+        keyword = request.GET['keyword']
+        if keyword:
+            products = Product.objects.order_by('-created_date').filter(Q(description__icontains=keyword) | Q(product_name__icontains=keyword)) # if it finds anything related to the search keyword it will bring that product. It will search both titles and description
+    context = {
+        'products': products,
+        'product_count': products.count,
+    }
+    return render(request, 'store/store.html', context)

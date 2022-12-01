@@ -60,7 +60,11 @@ class Account(AbstractBaseUser):
                        'first_name',
                        'last_name']  # This field modifies the requiered info for super user creation
 
+
     objects = MyAccountManager()
+
+    def full_name(self):
+        return f'{self.first_name} {self.last_name}'
 
     # This way, when we return the account we return the mail
     def __str__(self):

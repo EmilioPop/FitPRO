@@ -9,7 +9,7 @@ from category.models import Category
 class Product(models.Model):
     product_name = models.CharField(max_length=200, unique=True)
     slug = models.SlugField(max_length=200, unique=True)
-    description = models.TextField(max_length=500, blank=True)
+    description = models.TextField(max_length=3000, blank=True)
     price = models.IntegerField()
     image = models.ImageField(upload_to='photos/products',)
     stock = models.IntegerField()
@@ -40,15 +40,12 @@ class Product(models.Model):
 
 
 class VariationManager(models.Manager):
-    def colors(self):
-        return super(VariationManager, self).filter(variation_category='color', is_active=True)
 
     def sizes(self):
         return super(VariationManager, self).filter(variation_category='size', is_active=True)
 
 
 variation_category_choice = (
-    ('color', 'color'),
     ('size', 'size'),
 )
 

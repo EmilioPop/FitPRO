@@ -25,13 +25,13 @@ def store(request, category_slug=None):
         product_count = products.count()
     else:
         products = Product.objects.all().filter(is_available=True).order_by('id')  # is_available=True --> brings only products that are in stock
-        paginator = Paginator(products, 3) # this way we select how many products we display in a page
+        paginator = Paginator(products, 3) #this way we select how many products we display in a page
         page = request.GET.get('page')
         paged_products = paginator.get_page(page)
         product_count = products.count()
 
     context = {
-        'products': paged_products, # paged_products --> we set how many products are viewed per page
+        'products': paged_products, #paged_products --> we set how many products are viewed per page
         'product_count': product_count,
     }
     return render(request, 'store/store.html', context)

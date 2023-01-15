@@ -146,8 +146,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 # SMTP configuration for mail activation
-EMAIL_HOST = 'mail.bucurbogdan.ro'
+EMAIL_HOST = 'The host email'
 EMAIL_PORT = 587
-EMAIL_HOST_USER = 'test@bucurbogdan.ro'
-EMAIL_HOST_PASSWORD = 'Django1234!'
+EMAIL_HOST_USER = 'host email domain'
+EMAIL_HOST_PASSWORD = 'password'
 EMAIL_USE_TLS = True
